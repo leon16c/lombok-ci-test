@@ -1,0 +1,54 @@
+name: JaCoCo Test Report
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      matrix:
+        java-version: [21]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'adopt'
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Run tests and generate JaCoCo report
+      run: |
+        ./gradlew test jacocoTestReport
+        
+    - name: Add coverage to PR
+      uses: madrapps/jacoco-report@v1.7.1
+      with:
+        paths: |
+          ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: 80
+        min-coverage-changed-files: 90
+        
+    - name: Generate JaCoCo badge
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: jacoco-report
+        path: build/reports/jacoco/
