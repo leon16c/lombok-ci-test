@@ -27,6 +27,11 @@ jobs:
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - name: set gradle version
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        gradle-version: "8.10"
       
     - name: Run tests and generate JaCoCo report
       run: |
