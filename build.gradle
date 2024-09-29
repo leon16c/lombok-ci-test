@@ -32,12 +32,8 @@ jacocoTestReport {
     reports {
         xml.required = true
     }
-    doLast {
-        def isHeadless = System.getProperty('java.awt.headless')?.toBoolean() ?: false
-        if (isHeadless) {
-            println "headless, skipping html"
-        } else {
-            Desktop.desktop.open(file("build/reports/jacoco/test/html/index.html"))
-        }
-    }
+}
+
+tasks.register('openTestReport') {
+    Desktop.desktop.open(file("build/reports/jacoco/test/html/index.html"))
 }
