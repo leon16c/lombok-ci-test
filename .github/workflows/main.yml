@@ -35,10 +35,11 @@ jobs:
       
     - name: Run tests and generate JaCoCo report
       run: |
-        ./gradlew test jacocoTestReport --headful
         echo "DISPLAY=:99" >> $GITHUB_ENV
         export DISPLAY=:99
         x11vnc -display :99 &
+        ./gradlew test jacocoTestReport
+      
         
     - name: Add coverage to PR
       uses: madrapps/jacoco-report@v1.7.1
