@@ -1,5 +1,9 @@
 package leon16c;
 
-public class Handler {
+import lombok.Data;
+import lombok.Getter;
 
+@Data
+public class Handler {
+    String something;
 }
